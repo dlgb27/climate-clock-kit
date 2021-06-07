@@ -75,5 +75,5 @@ EOF
 
 # Disable sound as we're using hardware PWM
 on_chroot << EOF
-    reconfig /boot/config.txt "^.*dtparam=audio.*$" "dtparam=audio=off"
+    sed -i "s/^.*dtparam=audio.*$/dtparam=audio=off/g" /boot/config.txt >/dev/null
 EOF
