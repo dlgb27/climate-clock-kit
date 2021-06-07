@@ -31,8 +31,8 @@ cd "/home/${FIRST_USER_NAME}"
 [ -d rpi-rgb-led-matrix ] || git clone https://github.com/hzeller/rpi-rgb-led-matrix
 cd rpi-rgb-led-matrix
 git checkout e3dd56dcc0408862f39cccc47c1d9dea1b0fb2d2
-make build-python HARDWARE_DESC=adafruit-hat USER_DEFINES="-DDISABLE_HARDWARE_PULSES" PYTHON=/usr/bin/python3
-make install-python HARDWARE_DESC=adafruit-hat USER_DEFINES="-DDISABLE_HARDWARE_PULSES" PYTHON=/usr/bin/python3
+make build-python HARDWARE_DESC=adafruit-hat-pwm PYTHON=/usr/bin/python3
+make install-python HARDWARE_DESC=adafruit-hat-pwm PYTHON=/usr/bin/python3
 EOF
 chmod +x "${ROOTFS_DIR}/home/${FIRST_USER_NAME}/install_rgbmatrix.sh"
 
@@ -73,4 +73,7 @@ on_chroot << EOF
     sed -i '/if \[ -e \/run\/systemd\/system \] ; then/,+2 s/^#*/#/' /lib/udev/hwclock-set
 EOF
 
-
+# Disable sound as we're using hardware PWM
+on_chroot << EOF
+    reconfig /boot/config.txt "^.*dtparam=audio.*$" "dtparam=audio=off"
+EOF
